@@ -1,0 +1,344 @@
+<div class="home-container">
+  <div class="announcement">
+    <div class="container announcement__inner">
+      <span class="announcement__dot"></span>
+      <span>Une identité professionnelle claire, gratuite et accessible à tous.</span>
+      <a routerLink="/register">Découvrir ShadowKite <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+
+  <main id="top">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero__glow hero__glow--one" aria-hidden="true"></div>
+      <div class="hero__glow hero__glow--two" aria-hidden="true"></div>
+      <div class="container hero__grid">
+        <div class="hero__content">
+          <div class="eyebrow"><span class="eyebrow__line"></span> Identité professionnelle, sans complication</div>
+          <h1>Faites de vos compétences une <em>présence professionnelle.</em></h1>
+          <p class="hero__lead">
+            Créez un CV élégant, présentez vos projets et partagez votre parcours avec un lien simple et unique.
+            ShadowKite vous aide à être visible, même sans budget ni expérience en design.
+          </p>
+          <div class="hero__actions">
+            <a class="button button--primary button--large" routerLink="/register">
+              Commencer gratuitement
+              <span class="button__arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="button button--outline button--large" [routerLink]="['/@' + profile().username]">
+              Voir un exemple en direct
+              <span aria-hidden="true">✦</span>
+            </a>
+          </div>
+          <div class="hero__assurance">
+            <span class="avatar-stack" aria-hidden="true">
+              <span class="avatar avatar--blue">M</span>
+              <span class="avatar avatar--gold">A</span>
+              <span class="avatar avatar--coral">J</span>
+            </span>
+            <span><strong>Déjà pensé pour le réel</strong><br />Téléphone, connexion légère, partage instantané.</span>
+          </div>
+        </div>
+
+        <!-- Interactive Hero Dashboard Visual -->
+        <div class="hero-visual" aria-label="Aperçu d'un tableau de bord ShadowKite">
+          <div class="visual-orbit visual-orbit--large" aria-hidden="true"></div>
+          <div class="visual-orbit visual-orbit--small" aria-hidden="true"></div>
+          <div class="dashboard-window">
+            <div class="window-topbar">
+              <div class="window-dots"><i></i><i></i><i></i></div>
+              <span>app.shadowkite.com/@{{ profile().username }}</span>
+              <span class="window-lock" aria-hidden="true">⌁</span>
+            </div>
+            <div class="dashboard-body">
+              <aside class="dashboard-sidebar">
+                <div class="mini-brand"><span class="mini-brand__mark">✦</span><span>ShadowKite</span></div>
+                <div class="sidebar-label">ESPACE PERSONNEL</div>
+                <a class="sidebar-item sidebar-item--active" routerLink="/dashboard"><span>◈</span> Tableau de bord</a>
+                <a class="sidebar-item" routerLink="/dashboard/profile"><span>◎</span> Mon profil</a>
+                <a class="sidebar-item" routerLink="/dashboard/cv"><span>▤</span> Mon CV</a>
+                <a class="sidebar-item" routerLink="/dashboard/portfolio"><span>▧</span> Portfolio</a>
+                <div class="sidebar-bottom">
+                  <div class="sidebar-user">
+                    <span class="user-avatar">{{ profile().fullName.substring(0, 2).toUpperCase() }}</span>
+                    <span><strong>{{ profile().fullName }}</strong><small>Complété à {{ completionRate() }}%</small></span>
+                  </div>
+                </div>
+              </aside>
+              <div class="dashboard-main">
+                <div class="dashboard-heading">
+                  <div>
+                    <span class="mini-kicker">TABLEAU DE BORD</span>
+                    <h3>Bonjour, {{ profile().fullName.split(' ')[0] }} <span aria-hidden="true">✦</span></h3>
+                  </div>
+                  <div class="dashboard-notice"><span></span> Prêt à partager</div>
+                </div>
+                <div class="completion-card">
+                  <div class="completion-copy">
+                    <span class="mini-kicker">VOTRE PROGRESSION</span>
+                    <strong>Votre profil prend forme.</strong>
+                    <p>{{ projects().length }} projet(s) et CV complet prêt à être partagé.</p>
+                    <a routerLink="/dashboard/profile">Compléter mon profil →</a>
+                  </div>
+                  <div class="progress-ring"><span>{{ completionRate() }}<small>%</small></span></div>
+                </div>
+                <div class="dashboard-cards">
+                  <div class="dash-card dash-card--cv">
+                    <div class="dash-card__top">
+                      <span class="card-icon card-icon--blue">▤</span>
+                      <span class="status-pill">En ligne</span>
+                    </div>
+                    <span class="mini-kicker">MON CV</span>
+                    <strong>CV professionnel</strong>
+                    <small>Export PDF disponible</small>
+                    <a class="dash-card__link" routerLink="/dashboard/cv">Gérer mon CV <span>↗</span></a>
+                  </div>
+                  <div class="dash-card dash-card--portfolio">
+                    <div class="dash-card__top">
+                      <span class="card-icon card-icon--violet">▧</span>
+                      <span class="status-pill">{{ projects().length }} projets</span>
+                    </div>
+                    <span class="mini-kicker">MON PORTFOLIO</span>
+                    <strong>Réalisations actives</strong>
+                    <small>Mis en avant sur le lien public</small>
+                    <a class="dash-card__link dash-card__link--violet" routerLink="/dashboard/portfolio">Gérer mes projets <span>↗</span></a>
+                  </div>
+                </div>
+                <div class="dashboard-footer-card">
+                  <span class="share-icon">⌁</span>
+                  <div>
+                    <span class="mini-kicker">VOTRE LIEN PUBLIC UNIQUE</span>
+                    <strong>shadowkite.com/@{{ profile().username }}</strong>
+                  </div>
+                  <div class="card-actions-row">
+                    <button type="button" class="btn-copy-mini" (click)="copyDemoLink()" [class.is-copied]="shareCopied()">
+                      {{ shareCopied() ? 'Copié !' : 'Copier' }}
+                    </button>
+                    <a class="btn-view-mini" [routerLink]="['/@' + profile().username]">Visiter ↗</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="floating-note floating-note--top">
+            <span class="floating-note__icon">✓</span>
+            <span><strong>CV prêt à exporter</strong><small>PDF · 2 minutes</small></span>
+          </div>
+          <div class="floating-note floating-note--bottom">
+            <span class="floating-note__icon floating-note__icon--violet">↗</span>
+            <span><strong>Lien public unique</strong><small>Partage WhatsApp & LinkedIn</small></span>
+            <span class="sparkline">⌁⌁⌁</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof Bar -->
+    <section class="proof-bar">
+      <div class="container proof-bar__inner">
+        <span>Conçu pour les talents qui veulent avancer :</span>
+        <div class="proof-items">
+          <span>Étudiants & Diplômés</span><i></i>
+          <span>Freelances & Développeurs</span><i></i>
+          <span>Créateurs & Designers</span><i></i>
+          <span>Professionnels</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section product-section" id="product">
+      <div class="container">
+        <div class="section-heading section-heading--split">
+          <div>
+            <div class="eyebrow"><span class="eyebrow__line"></span> Tout ce dont vous avez besoin</div>
+            <h2>Votre parcours mérite plus qu'un fichier coincé dans un dossier.</h2>
+          </div>
+          <p>Une seule plateforme pour organiser vos informations, mettre en valeur vos réalisations et être trouvé plus facilement.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card feature-card--dark">
+            <div class="feature-card__heading"><span class="feature-number">01</span><span class="feature-card__icon">▤</span></div>
+            <h3>Un CV professionnel et structuré</h3>
+            <p>Un formulaire guidé par étapes (expériences, formations, compétences, langues) et un export propre en PDF prêt à postuler.</p>
+            <div class="cv-mini-preview" aria-hidden="true">
+              <div class="cv-mini-top"><span></span><span></span></div>
+              <div class="cv-mini-line cv-mini-line--long"></div>
+              <div class="cv-mini-line"></div>
+              <div class="cv-mini-section"></div>
+              <div class="cv-mini-line cv-mini-line--long"></div>
+              <div class="cv-mini-line"></div>
+              <div class="cv-mini-line cv-mini-line--short"></div>
+            </div>
+            <a routerLink="/dashboard/cv" class="card-link">Créer mon CV <span>↗</span></a>
+          </article>
+          <article class="feature-card feature-card--light">
+            <div class="feature-card__heading"><span class="feature-number">02</span><span class="feature-card__icon feature-card__icon--blue">▧</span></div>
+            <h3>Des projets concrets qui parlent pour vous</h3>
+            <p>Présentez vos projets avec captures, descriptions, votre rôle précis, les technologies utilisées et les liens de démo en direct.</p>
+            <div class="project-mini-preview" aria-hidden="true">
+              <div class="project-mini-image project-mini-image--one"></div>
+              <div class="project-mini-image project-mini-image--two"></div>
+              <div class="project-mini-image project-mini-image--three"></div>
+            </div>
+            <a routerLink="/dashboard/portfolio" class="card-link card-link--blue">Gérer mon portfolio <span>↗</span></a>
+          </article>
+          <article class="feature-card feature-card--accent">
+            <div class="feature-card__heading"><span class="feature-number">03</span><span class="feature-card__icon">⌁</span></div>
+            <h3>Un lien public unique & code QR</h3>
+            <p>Votre page publique est prête à être partagée partout : WhatsApp, LinkedIn, email, et flashable via code QR généré automatiquement.</p>
+            <div class="link-mini-preview" aria-hidden="true">
+              <span class="link-mini-icon">✦</span>
+              <span>shadowkite.com/<b>@{{ profile().username }}</b></span>
+              <span class="link-mini-copy">Copier</span>
+            </div>
+            <a [routerLink]="['/@' + profile().username]" class="card-link card-link--white">Voir la page publique <span>↗</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How it works Section -->
+    <section class="section how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading section-heading--center">
+          <div class="eyebrow"><span class="eyebrow__line"></span> Simple par intention <span class="eyebrow__line"></span></div>
+          <h2>De l'idée au lien public,<br /><em>en quelques minutes.</em></h2>
+          <p>Pas besoin d'outils complexes ni de compétences en design. ShadowKite vous accompagne pas à pas.</p>
+        </div>
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step__number">01</div>
+            <div class="step__icon step__icon--blue">✦</div>
+            <h3>Créez votre profil</h3>
+            <p>Renseignez votre nom, votre titre, vos coordonnées et votre biographie en quelques clics.</p>
+            <span class="step__connector"></span>
+          </div>
+          <div class="step">
+            <div class="step__number">02</div>
+            <div class="step__icon step__icon--violet">▤</div>
+            <h3>Construisez votre CV & Projets</h3>
+            <p>Ajoutez vos expériences professionnelles, diplômes, compétences et vos réalisations marquantes.</p>
+            <span class="step__connector"></span>
+          </div>
+          <div class="step">
+            <div class="step__number">03</div>
+            <div class="step__icon step__icon--coral">↗</div>
+            <h3>Partagez votre lien partout</h3>
+            <p>Obtenez votre adresse web personnelle, téléchargez votre CV PDF et partagez sur WhatsApp ou LinkedIn.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Public Showcase Panel -->
+    <section class="section preview-section" id="preview">
+      <div class="container preview-panel">
+        <div class="preview-copy">
+          <div class="eyebrow eyebrow--light"><span class="eyebrow__line"></span> Votre vitrine publique</div>
+          <h2>Une page qui valorise votre travail auprès des recruteurs et clients.</h2>
+          <p>Une présentation nette de qui vous êtes, de ce que vous maîtrisez et des réalisations dont vous êtes fier.</p>
+          <ul class="check-list">
+            <li><span>✓</span> Mise en page professionnelle, élégante et 100% responsive</li>
+            <li><span>✓</span> Téléchargement direct de votre CV en format PDF</li>
+            <li><span>✓</span> Partage direct WhatsApp, LinkedIn et QR Code</li>
+            <li><span>✓</span> Contrôle total : modifiable à tout moment, public ou privé</li>
+          </ul>
+          <div class="preview-cta-group">
+            <a class="button button--light button--large" routerLink="/register">
+              Créer ma page publique gratuitement <span class="button__arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="button button--outline-light button--large" [routerLink]="['/@' + profile().username]">
+              Tester l'exemple de {{ profile().fullName }} ↗
+            </a>
+          </div>
+        </div>
+        <div class="profile-preview">
+          <div class="profile-preview__top">
+            <span class="profile-preview__dots"><i></i><i></i><i></i></span>
+            <span>shadowkite.com/@{{ profile().username }}</span>
+            <span>···</span>
+          </div>
+          <div class="profile-preview__body">
+            <div class="profile-avatar" [style.background-color]="profile().avatarColor">{{ profile().fullName.substring(0, 2).toUpperCase() }}</div>
+            <span class="profile-location">{{ profile().location.toUpperCase() }} · DISPONIBLE</span>
+            <h3>{{ profile().fullName }}</h3>
+            <p>{{ profile().bio }}</p>
+            <div class="profile-links">
+              <span>in</span><span>GH</span><span>↗</span>
+            </div>
+            <div class="profile-divider"></div>
+            <div class="profile-section-label">PROJETS SÉLECTIONNÉS <span>0{{ projects().length }}</span></div>
+            <div class="profile-projects">
+              @for (project of projects(); track project.id) {
+                <div class="profile-project" [style.border-left-color]="project.accentColor">
+                  <span class="proj-accent-dot" [style.background-color]="project.accentColor"></span>
+                  <div>
+                    <strong>{{ project.title }}</strong>
+                    <small>{{ project.role }} · {{ project.year }}</small>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Open Source Values Section -->
+    <section class="section values-section" id="open-source">
+      <div class="container values-grid">
+        <div class="values-intro">
+          <div class="eyebrow"><span class="eyebrow__line"></span> Les principes ShadowKite</div>
+          <h2>La technologie doit ouvrir des portes, pas en ajouter.</h2>
+          <p>Né d'un constat en RDC pour répondre au besoin d'outils simples et sans coût, ShadowKite est conçu comme un bien commun ouvert au monde entier.</p>
+          <a class="text-link text-link--dark" href="https://github.com/Shadow-coder243/ShadowKite" target="_blank" rel="noopener">
+            Voir le code source sur GitHub <span>↗</span>
+          </a>
+        </div>
+        <div class="value-list">
+          <div class="value-item">
+            <span class="value-item__icon">◌</span>
+            <div>
+              <h3>Simple & Guidé</h3>
+              <p>Des étapes claires et sans jargon pour que chacun puisse se valoriser dès la première utilisation.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-item__icon">⌁</span>
+            <div>
+              <h3>Léger & Adapté au smartphone</h3>
+              <p>Une interface optimisée pour les écrans mobiles et les débits de connexion modestes.</p>
+            </div>
+          </div>
+          <div class="value-item">
+            <span class="value-item__icon">✦</span>
+            <div>
+              <h3>100% Gratuit & Open Source</h3>
+              <p>Pas de frais cachés pour télécharger son CV ou publier sa page. Le code appartient à la communauté.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="cta-section">
+      <div class="cta-shape cta-shape--one" aria-hidden="true"></div>
+      <div class="cta-shape cta-shape--two" aria-hidden="true"></div>
+      <div class="container cta-content">
+        <div class="eyebrow eyebrow--light"><span class="eyebrow__line"></span> Votre parcours commence ici</div>
+        <h2>Votre travail mérite<br /><em>d'être vu.</em></h2>
+        <p>Rejoignez ShadowKite aujourd'hui et donnez à vos compétences la visibilité qu'elles méritent.</p>
+        <div class="cta-actions">
+          <a class="button button--light button--large" routerLink="/register">
+            Créer mon espace gratuitement <span class="button__arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="button button--outline-light button--large" routerLink="/login">
+            Se connecter <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

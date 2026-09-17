@@ -1,15 +1,21 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { ProfileService } from './services/profile.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
+  protected readonly authService = inject(AuthService);
+  protected readonly profileService = inject(ProfileService);
+  private readonly router = inject(Router);
+
   protected readonly isMenuOpen = signal(false);
-  protected readonly shareCopied = signal(false);
 
   protected toggleMenu(): void {
     this.isMenuOpen.update((open) => !open);
@@ -19,16 +25,9 @@ export class App {
     this.isMenuOpen.set(false);
   }
 
-  protected async copyLink(): Promise<void> {
-    const link = 'shadowkite.com/@jean-mukendi';
-
-    try {
-      await navigator.clipboard.writeText(link);
-    } catch {
-      // Keep the interaction useful in browsers without clipboard permissions.
-    }
-
-    this.shareCopied.set(true);
-    window.setTimeout(() => this.shareCopied.set(false), 2200);
+  protected logout(): void {
+    this.authService.logout();
+    this.closeMenu();
+    this.router.navigate(['/']);
   }
 }

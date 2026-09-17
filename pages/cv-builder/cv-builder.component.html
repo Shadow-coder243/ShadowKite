@@ -1,0 +1,582 @@
+<div class="cv-page">
+  <!-- Top Action Bar (hidden in print) -->
+  <header class="cv-topbar no-print">
+    <div class="container cv-topbar__inner">
+      <div class="topbar-left">
+        <a routerLink="/dashboard" class="back-link">← Tableau de bord</a>
+        <h2>Créateur de CV</h2>
+      </div>
+
+      <!-- Template Selector -->
+      <div class="template-selector">
+        <span class="tpl-label">Modèle :</span>
+        <button
+          type="button"
+          class="tpl-btn"
+          [class.active]="template() === 'modern'"
+          (click)="setTemplate('modern')"
+        >
+          Moderne
+        </button>
+        <button
+          type="button"
+          class="tpl-btn"
+          [class.active]="template() === 'classic'"
+          (click)="setTemplate('classic')"
+        >
+          Classique
+        </button>
+        <button
+          type="button"
+          class="tpl-btn"
+          [class.active]="template() === 'minimal'"
+          (click)="setTemplate('minimal')"
+        >
+          Minimal
+        </button>
+      </div>
+
+      <div class="topbar-right">
+        @if (saveNotification()) {
+          <span class="auto-save-tag">✓ Enregistré</span>
+        }
+        <button type="button" class="button button--primary button--small" (click)="printCV()">
+          <span>📥 Télécharger / Imprimer PDF</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile View Switcher (no-print) -->
+  <div class="mobile-tabs no-print">
+    <button
+      type="button"
+      [class.active]="mobileTab() === 'edit'"
+      (click)="mobileTab.set('edit')"
+    >
+      ✏️ Éditer le formulaire
+    </button>
+    <button
+      type="button"
+      [class.active]="mobileTab() === 'preview'"
+      (click)="mobileTab.set('preview')"
+    >
+      👁️ Aperçu du CV
+    </button>
+  </div>
+
+  <div class="container cv-layout">
+    <!-- Form Editor Column (no-print) -->
+    <div class="cv-editor-pane no-print" [class.hidden-on-mobile]="mobileTab() === 'preview'">
+      <!-- Guided Section Navigation -->
+      <nav class="section-nav">
+        <button
+          type="button"
+          class="nav-tab"
+          [class.active]="activeSection() === 'summary'"
+          (click)="setSection('summary')"
+        >
+          <span>01</span> Résumé
+        </button>
+        <button
+          type="button"
+          class="nav-tab"
+          [class.active]="activeSection() === 'experience'"
+          (click)="setSection('experience')"
+        >
+          <span>02</span> Expériences ({{ experiences().length }})
+        </button>
+        <button
+          type="button"
+          class="nav-tab"
+          [class.active]="activeSection() === 'education'"
+          (click)="setSection('education')"
+        >
+          <span>03</span> Formations ({{ educations().length }})
+        </button>
+        <button
+          type="button"
+          class="nav-tab"
+          [class.active]="activeSection() === 'skills'"
+          (click)="setSection('skills')"
+        >
+          <span>04</span> Compétences ({{ skills().length }})
+        </button>
+        <button
+          type="button"
+          class="nav-tab"
+          [class.active]="activeSection() === 'languages'"
+          (click)="setSection('languages')"
+        >
+          <span>05</span> Langues & Certifs
+        </button>
+      </nav>
+
+      <!-- Section: Summary -->
+      @if (activeSection() === 'summary') {
+        <div class="editor-section">
+          <h3>Résumé & Objectif Professionnel</h3>
+          <p class="section-hint">Une courte introduction synthétisant vos atouts et votre valeur ajoutée.</p>
+
+          <div class="form-group">
+            <label class="form-label" for="summary">Texte de présentation du CV</label>
+            <textarea
+              id="summary"
+              class="form-textarea"
+              rows="5"
+              [ngModel]="summary()"
+              (ngModelChange)="summary.set($event); saveChanges()"
+              placeholder="Expliquez en quelques lignes votre parcours, vos forces et vos ambitions..."
+            ></textarea>
+          </div>
+
+          <div class="info-callout">
+            <p><strong>Note :</strong> Votre nom, titre et coordonnées sont synchronisés automatiquement depuis votre profil utilisateur.</p>
+            <a routerLink="/dashboard/profile">Modifier l'identité du profil →</a>
+          </div>
+        </div>
+      }
+
+      <!-- Section: Experience -->
+      @if (activeSection() === 'experience') {
+        <div class="editor-section">
+          <div class="section-header-row">
+            <div>
+              <h3>Expériences professionnelles</h3>
+              <p class="section-hint">Indiquez vos postes, missions freelances ou stages.</p>
+            </div>
+            <button type="button" class="button button--secondary button--small" (click)="addExperience()">
+              + Ajouter
+            </button>
+          </div>
+
+          <div class="items-list">
+            @for (exp of experiences(); track exp.id) {
+              <div class="item-card">
+                <div class="item-card__header">
+                  <strong>{{ exp.role || 'Poste sans titre' }}</strong>
+                  <button type="button" class="btn-delete" (click)="removeExperience(exp.id)" title="Supprimer">✕</button>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Poste / Fonction</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="exp.role"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Développeur Web"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Entreprise / Organisation</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="exp.company"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: TechRDC Solutions"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Période (Début - Fin)</label>
+                    <div class="period-row">
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="exp.startDate"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="Ex: 2022"
+                      />
+                      <span>à</span>
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="exp.endDate"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="Ex: Présent"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Lieu</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="exp.location"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Kinshasa, RDC"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Missions et réalisations clés</label>
+                  <textarea
+                    class="form-textarea"
+                    rows="3"
+                    [(ngModel)]="exp.description"
+                    (ngModelChange)="saveChanges()"
+                    placeholder="Ce que vous avez apporté ou développé..."
+                  ></textarea>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Section: Education -->
+      @if (activeSection() === 'education') {
+        <div class="editor-section">
+          <div class="section-header-row">
+            <div>
+              <h3>Formations & Diplômes</h3>
+              <p class="section-hint">Vos études universitaires, formations professionnelles et certificats.</p>
+            </div>
+            <button type="button" class="button button--secondary button--small" (click)="addEducation()">
+              + Ajouter
+            </button>
+          </div>
+
+          <div class="items-list">
+            @for (edu of educations(); track edu.id) {
+              <div class="item-card">
+                <div class="item-card__header">
+                  <strong>{{ edu.degree || 'Formation' }}</strong>
+                  <button type="button" class="btn-delete" (click)="removeEducation(edu.id)">✕</button>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Intitulé du diplôme / Titre</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="edu.degree"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Licence en Informatique"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Établissement / École</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="edu.institution"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Université de Kinshasa"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Années (Début - Fin)</label>
+                    <div class="period-row">
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="edu.startYear"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="2018"
+                      />
+                      <span>à</span>
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="edu.endYear"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="2021"
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Spécialité / Filière</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="edu.field"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Systèmes d'information"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Section: Skills -->
+      @if (activeSection() === 'skills') {
+        <div class="editor-section">
+          <h3>Compétences & Technologies</h3>
+          <p class="section-hint">Indiquez les outils, frameworks et savoir-faire que vous maîtrisez.</p>
+
+          <!-- Quick Add Form -->
+          <div class="add-inline-form">
+            <input
+              type="text"
+              class="form-input"
+              [ngModel]="newSkillName()"
+              (ngModelChange)="newSkillName.set($event)"
+              placeholder="Ex: TypeScript, Angular, Git, UI Design..."
+              (keyup.enter)="addSkill()"
+            />
+            <select
+              class="form-select select-inline"
+              [ngModel]="newSkillLevel()"
+              (ngModelChange)="newSkillLevel.set($event)"
+            >
+              <option value="Débutant">Débutant</option>
+              <option value="Intermédiaire">Intermédiaire</option>
+              <option value="Avancé">Avancé</option>
+              <option value="Expert">Expert</option>
+            </select>
+            <button type="button" class="button button--primary button--small" (click)="addSkill()">
+              Ajouter
+            </button>
+          </div>
+
+          <div class="tags-cloud">
+            @for (sk of skills(); track sk.id) {
+              <div class="skill-pill">
+                <span class="skill-name">{{ sk.name }}</span>
+                <small class="skill-lvl">{{ sk.level }}</small>
+                <button type="button" class="btn-remove-tag" (click)="removeSkill(sk.id)">✕</button>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Section: Languages & Certifications -->
+      @if (activeSection() === 'languages') {
+        <div class="editor-section">
+          <h3>Langues</h3>
+          <div class="add-inline-form">
+            <input
+              type="text"
+              class="form-input"
+              [ngModel]="newLangName()"
+              (ngModelChange)="newLangName.set($event)"
+              placeholder="Ex: Français, Anglais, Lingala..."
+              (keyup.enter)="addLanguage()"
+            />
+            <select
+              class="form-select select-inline"
+              [ngModel]="newLangLevel()"
+              (ngModelChange)="newLangLevel.set($event)"
+            >
+              <option value="Langue maternelle">Langue maternelle</option>
+              <option value="Courant">Courant</option>
+              <option value="Bilingue">Bilingue</option>
+              <option value="Intermédiaire">Intermédiaire</option>
+              <option value="Notions">Notions</option>
+            </select>
+            <button type="button" class="button button--primary button--small" (click)="addLanguage()">
+              Ajouter
+            </button>
+          </div>
+
+          <div class="tags-cloud">
+            @for (l of languages(); track l.id) {
+              <div class="skill-pill">
+                <span class="skill-name">{{ l.name }}</span>
+                <small class="skill-lvl">{{ l.level }}</small>
+                <button type="button" class="btn-remove-tag" (click)="removeLanguage(l.id)">✕</button>
+              </div>
+            }
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="section-header-row">
+            <div>
+              <h3>Certifications</h3>
+              <p class="section-hint">Diplômes spécifiques, concours ou certificats en ligne.</p>
+            </div>
+            <button type="button" class="button button--secondary button--small" (click)="addCertification()">
+              + Ajouter
+            </button>
+          </div>
+
+          <div class="items-list">
+            @for (cert of certifications(); track cert.id) {
+              <div class="item-card">
+                <div class="item-card__header">
+                  <strong>{{ cert.title }}</strong>
+                  <button type="button" class="btn-delete" (click)="removeCertification(cert.id)">✕</button>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label">Titre du certificat</label>
+                    <input
+                      type="text"
+                      class="form-input"
+                      [(ngModel)]="cert.title"
+                      (ngModelChange)="saveChanges()"
+                      placeholder="Ex: Professional Frontend Developer"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Organisme & Année</label>
+                    <div class="period-row">
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="cert.issuer"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="Ex: freeCodeCamp"
+                      />
+                      <input
+                        type="text"
+                        class="form-input"
+                        [(ngModel)]="cert.year"
+                        (ngModelChange)="saveChanges()"
+                        placeholder="2023"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Live Preview Column / Printable CV Document -->
+    <div class="cv-preview-pane" [class.hidden-on-mobile]="mobileTab() === 'edit'">
+      <div class="cv-sheet printable-cv" [attr.data-template]="template()">
+        <!-- CV Header -->
+        <div class="cv-doc-header">
+          <div class="cv-doc-header__left">
+            <h1 class="cv-name">{{ profile().fullName }}</h1>
+            <p class="cv-headline">{{ profile().title }}</p>
+          </div>
+          <div class="cv-doc-header__right">
+            <div class="cv-contact-item">📍 {{ profile().location }}</div>
+            @if (profile().email) {
+              <div class="cv-contact-item">✉️ {{ profile().email }}</div>
+            }
+            @if (profile().phone) {
+              <div class="cv-contact-item">📞 {{ profile().phone }}</div>
+            }
+            <div class="cv-contact-item cv-contact-link">🔗 shadowkite.com/@{{ profile().username }}</div>
+          </div>
+        </div>
+
+        <div class="cv-doc-body">
+          <!-- Summary Block -->
+          @if (summary()) {
+            <section class="cv-section">
+              <h2 class="cv-section-title">Profil & Synthèse</h2>
+              <p class="cv-summary-text">{{ summary() }}</p>
+            </section>
+          }
+
+          <!-- Experience Block -->
+          @if (experiences().length > 0) {
+            <section class="cv-section">
+              <h2 class="cv-section-title">Expériences Professionnelles</h2>
+              <div class="cv-timeline">
+                @for (exp of experiences(); track exp.id) {
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <div>
+                        <strong class="cv-entry-title">{{ exp.role }}</strong>
+                        <span class="cv-entry-sub">{{ exp.company }} · {{ exp.location }}</span>
+                      </div>
+                      <span class="cv-entry-date">{{ exp.startDate }} - {{ exp.endDate || 'Présent' }}</span>
+                    </div>
+                    @if (exp.description) {
+                      <p class="cv-entry-desc">{{ exp.description }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+          }
+
+          <!-- Education Block -->
+          @if (educations().length > 0) {
+            <section class="cv-section">
+              <h2 class="cv-section-title">Formations & Diplômes</h2>
+              <div class="cv-timeline">
+                @for (edu of educations(); track edu.id) {
+                  <div class="cv-entry">
+                    <div class="cv-entry-head">
+                      <div>
+                        <strong class="cv-entry-title">{{ edu.degree }}</strong>
+                        <span class="cv-entry-sub">{{ edu.institution }} {{ edu.field ? '— ' + edu.field : '' }}</span>
+                      </div>
+                      <span class="cv-entry-date">{{ edu.startYear }} - {{ edu.endYear }}</span>
+                    </div>
+                    @if (edu.description) {
+                      <p class="cv-entry-desc">{{ edu.description }}</p>
+                    }
+                  </div>
+                }
+              </div>
+            </section>
+          }
+
+          <!-- Skills and Languages Two-Column -->
+          <div class="cv-columns-row">
+            @if (skills().length > 0) {
+              <div class="cv-subcol">
+                <h2 class="cv-section-title">Compétences</h2>
+                <div class="cv-skills-grid">
+                  @for (sk of skills(); track sk.id) {
+                    <span class="cv-skill-badge">
+                      <strong>{{ sk.name }}</strong>
+                      <small>{{ sk.level }}</small>
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (languages().length > 0 || certifications().length > 0) {
+              <div class="cv-subcol">
+                @if (languages().length > 0) {
+                  <h2 class="cv-section-title">Langues</h2>
+                  <div class="cv-lang-list">
+                    @for (l of languages(); track l.id) {
+                      <div class="cv-lang-item">
+                        <span>{{ l.name }}</span>
+                        <strong>{{ l.level }}</strong>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (certifications().length > 0) {
+                  <h2 class="cv-section-title" style="margin-top: 14px;">Certifications</h2>
+                  <div class="cv-cert-list">
+                    @for (c of certifications(); track c.id) {
+                      <div class="cv-cert-item">
+                        <span>{{ c.title }}</span>
+                        <small>{{ c.issuer }} ({{ c.year }})</small>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="cv-doc-footer">
+          <span>Généré avec ShadowKite · CV & Portfolio en libre accès</span>
+          <span>shadowkite.com/@{{ profile().username }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

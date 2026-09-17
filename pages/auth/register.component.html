@@ -1,0 +1,116 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__header">
+      <a routerLink="/" class="auth-brand">
+        <span class="auth-brand__mark">✦</span>
+        <span>Shadow<strong>Kite</strong></span>
+      </a>
+      <h2>Créer votre identité professionnelle</h2>
+      <p>Gratuit, sans carte de crédit et prêt en quelques minutes.</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="auth-alert auth-alert--error">
+        <span>⚠</span>
+        <div>{{ errorMessage() }}</div>
+      </div>
+    }
+
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label class="form-label" for="name">Nom complet</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="form-input"
+          [ngModel]="name()"
+          (ngModelChange)="onNameInput($event)"
+          placeholder="Ex: Jean Mukendi"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="username">
+          <span>Identifiant public (slug URL)</span>
+          <span class="optional">Votre lien unique</span>
+        </label>
+        <div class="slug-input-wrapper">
+          <span class="slug-prefix">shadowkite.com/@</span>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-input slug-input"
+            [ngModel]="username()"
+            (ngModelChange)="username.set($event)"
+            placeholder="jean-mukendi"
+            required
+          />
+        </div>
+        <span class="form-help">Ce lien sera partagé sur votre CV, WhatsApp ou LinkedIn.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="title">
+          <span>Titre professionnel</span>
+          <span class="optional">Facultatif</span>
+        </label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          class="form-input"
+          [ngModel]="title()"
+          (ngModelChange)="title.set($event)"
+          placeholder="Ex: Développeur Full-Stack, Designer, Étudiant..."
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Adresse email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="jean.mukendi@example.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Mot de passe</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="Au moins 6 caractères"
+          required
+        />
+      </div>
+
+      <button type="submit" class="button button--primary button--large btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>Création du profil...</span>
+        } @else {
+          <span>Créer mon profil gratuitement</span>
+          <span class="button__arrow">↗</span>
+        }
+      </button>
+    </form>
+
+    <div class="auth-card__footer">
+      <p>Vous avez déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+      <div class="auth-back">
+        <a routerLink="/">← Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+</div>

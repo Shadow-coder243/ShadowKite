@@ -47,7 +47,7 @@
 - [ ] **25.** Créer et organiser les dépôts publics du projet. *(Documentation / Infrastructure)*
 - [ ] **26.** Choisir une licence open source adaptée. *(Documentation / Produit)*
 - [ ] **27.** Écrire le README de démarrage. *(Documentation)*
-- [ ] **28.** Initialiser l’application web Angular. *(Frontend)*
+- [x] **28.** Initialiser l’application web Angular. *(Frontend)*
 - [ ] **29.** Ajouter la gestion de configuration documentée. *(Frontend / Backend / Mobile)*
 - [ ] **30.** Préparer la base de données Neon. *(Backend / Infrastructure)*
 - [ ] **31.** Définir les comptes et permissions. *(Backend)*
@@ -55,46 +55,46 @@
 
 ## Phase 5 — Développer les comptes et le profil
 
-- [ ] **33.** Créer l’inscription. *(Backend / Frontend / Mobile)*
-- [ ] **34.** Créer la connexion et la déconnexion. *(Backend / Frontend / Mobile)*
-- [ ] **35.** Ajouter la récupération de compte. *(Backend / Frontend / Mobile)*
-- [ ] **36.** Créer le tableau de bord. *(Frontend / Mobile / Backend)*
-- [ ] **37.** Ajouter l’édition du profil. *(Backend / Frontend / Mobile)*
-- [ ] **38.** Ajouter une photo facultative. *(Backend / Frontend / Mobile)*
-- [ ] **39.** Ajouter les préférences de visibilité. *(Backend / Frontend / Mobile)*
+- [x] **33.** Créer l’inscription. *(Backend / Frontend / Mobile)*
+- [x] **34.** Créer la connexion et la déconnexion. *(Backend / Frontend / Mobile)*
+- [x] **35.** Ajouter la récupération de compte. *(Backend / Frontend / Mobile)*
+- [x] **36.** Créer le tableau de bord. *(Frontend / Mobile / Backend)*
+- [x] **37.** Ajouter l’édition du profil. *(Backend / Frontend / Mobile)*
+- [x] **38.** Ajouter une photo facultative. *(Backend / Frontend / Mobile)*
+- [x] **39.** Ajouter les préférences de visibilité. *(Backend / Frontend / Mobile)*
 - [ ] **40.** Tester les permissions entre deux comptes. *(Backend / Qualité)*
 
 ## Phase 6 — Développer le créateur de CV
 
-- [ ] **41.** Créer le formulaire des informations personnelles. *(Backend / Frontend / Mobile)*
-- [ ] **42.** Créer le formulaire des formations. *(Backend / Frontend / Mobile)*
-- [ ] **43.** Créer le formulaire des expériences. *(Backend / Frontend / Mobile)*
-- [ ] **44.** Créer le formulaire des compétences. *(Backend / Frontend / Mobile)*
-- [ ] **45.** Créer le formulaire des langues et certifications. *(Backend / Frontend / Mobile)*
-- [ ] **46.** Ajouter un modèle de CV lisible. *(Frontend / Mobile / Design)*
-- [ ] **47.** Ajouter l’aperçu du CV. *(Frontend / Mobile)*
-- [ ] **48.** Générer le téléchargement PDF. *(Backend / Frontend / Mobile)*
+- [x] **41.** Créer le formulaire des informations personnelles. *(Backend / Frontend / Mobile)*
+- [x] **42.** Créer le formulaire des formations. *(Backend / Frontend / Mobile)*
+- [x] **43.** Créer le formulaire des expériences. *(Backend / Frontend / Mobile)*
+- [x] **44.** Créer le formulaire des compétences. *(Backend / Frontend / Mobile)*
+- [x] **45.** Créer le formulaire des langues et certifications. *(Backend / Frontend / Mobile)*
+- [x] **46.** Ajouter un modèle de CV lisible. *(Frontend / Mobile / Design)*
+- [x] **47.** Ajouter l’aperçu du CV. *(Frontend / Mobile)*
+- [x] **48.** Générer le téléchargement PDF. *(Backend / Frontend / Mobile)*
 
 ## Phase 7 — Développer le portfolio et le lien public
 
-- [ ] **49.** Créer le formulaire d’ajout d’un projet. *(Backend / Frontend / Mobile)*
-- [ ] **50.** Ajouter une image ou une miniature. *(Backend / Frontend / Mobile)*
-- [ ] **51.** Ajouter un lien externe de démonstration. *(Backend / Frontend / Mobile)*
-- [ ] **52.** Permettre de modifier et supprimer un projet. *(Backend / Frontend / Mobile)*
-- [ ] **53.** Créer la page portfolio publique. *(Frontend / Mobile / Backend)*
-- [ ] **54.** Générer une URL unique. *(Backend / Frontend / Mobile)*
-- [ ] **55.** Ajouter le bouton de partage et de copie. *(Frontend / Mobile)*
-- [ ] **56.** Ajouter un aperçu avant publication. *(Frontend / Mobile)*
+- [x] **49.** Créer le formulaire d’ajout d’un projet. *(Backend / Frontend / Mobile)*
+- [x] **50.** Ajouter une image ou une miniature. *(Backend / Frontend / Mobile)*
+- [x] **51.** Ajouter un lien externe de démonstration. *(Backend / Frontend / Mobile)*
+- [x] **52.** Permettre de modifier et supprimer un projet. *(Backend / Frontend / Mobile)*
+- [x] **53.** Créer la page portfolio publique. *(Frontend / Mobile / Backend)*
+- [x] **54.** Générer une URL unique. *(Backend / Frontend / Mobile)*
+- [x] **55.** Ajouter le bouton de partage et de copie. *(Frontend / Mobile)*
+- [x] **56.** Ajouter un aperçu avant publication. *(Frontend / Mobile)*
 
 ## Phase 8 — Rendre le produit fiable et accessible
 
-- [ ] **57.** Adapter toutes les pages aux petits écrans. *(Frontend / Mobile / Design)*
+- [x] **57.** Adapter toutes les pages aux petits écrans. *(Frontend / Mobile / Design)*
 - [ ] **58.** Tester l’affichage sur plusieurs navigateurs. *(Frontend / Mobile / Qualité)*
 - [ ] **59.** Optimiser la taille des images. *(Frontend / Mobile / Backend)*
-- [ ] **60.** Ajouter des états de chargement. *(Frontend / Mobile)*
-- [ ] **61.** Ajouter des validations de formulaires. *(Backend / Frontend / Mobile)*
+- [x] **60.** Ajouter des états de chargement. *(Frontend / Mobile)*
+- [x] **61.** Ajouter des validations de formulaires. *(Backend / Frontend / Mobile)*
 - [ ] **62.** Vérifier les textes et l’orthographe. *(Produit / Design / Documentation)*
-- [ ] **63.** Ajouter les balises d’accessibilité essentielles. *(Frontend / Mobile)*
+- [x] **63.** Ajouter les balises d’accessibilité essentielles. *(Frontend / Mobile)*
 - [ ] **64.** Tester le parcours avec cinq utilisateurs. *(Produit / Qualité)*
 
 ## Phase 9 — Sécuriser, documenter et publier
@@ -110,9 +110,9 @@
 
 ## Phase 10 — Améliorer et faire vivre le projet
 
-- [ ] **73.** Ajouter un deuxième modèle de CV. *(Frontend / Mobile / Design)*
+- [x] **73.** Ajouter un deuxième modèle de CV. *(Frontend / Mobile / Design)*
 - [ ] **74.** Ajouter un deuxième thème de portfolio. *(Frontend / Mobile / Design)*
-- [ ] **75.** Ajouter le QR code du portfolio. *(Frontend / Mobile / Backend)*
+- [x] **75.** Ajouter le QR code du portfolio. *(Frontend / Mobile / Backend)*
 - [ ] **76.** Ajouter l’import d’un fichier existant. *(Backend / Frontend / Mobile)*
 - [ ] **77.** Ajouter une seconde langue. *(Frontend / Mobile / Backend)*
 - [ ] **78.** Créer un guide de contribution. *(Documentation)*

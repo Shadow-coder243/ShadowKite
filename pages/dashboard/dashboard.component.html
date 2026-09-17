@@ -1,0 +1,247 @@
+<div class="dashboard-page">
+  <div class="container">
+    <!-- Top Welcome Banner -->
+    <header class="dash-header">
+      <div>
+        <span class="mini-kicker">ESPACE PERSONNEL · SHADOWKITE</span>
+        <h1>Bonjour, {{ profile().fullName.split(' ')[0] }} <span class="sparkle">✦</span></h1>
+        <p class="dash-sub">Gérez votre identité professionnelle, mettez à jour votre CV et diffusez votre portfolio.</p>
+      </div>
+
+      <div class="dash-actions">
+        <a [routerLink]="['/@' + profile().username]" class="button button--secondary button--small" target="_blank">
+          <span>Voir ma vitrine publique</span>
+          <span>↗</span>
+        </a>
+        <button type="button" class="button button--primary button--small" (click)="copyPublicLink()">
+          <span>{{ linkCopied() ? '✓ Lien copié !' : '🔗 Copier mon lien' }}</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Public Link Highlight Banner -->
+    <div class="public-link-card">
+      <div class="public-link-icon">⌁</div>
+      <div class="public-link-info">
+        <span class="mini-kicker">VOTRE ADRESSE PUBLIQUE UNIQUE</span>
+        <div class="public-url-text">{{ publicUrl }}</div>
+        <div class="public-status">
+          <span class="dot" [class.dot--green]="profile().visibility === 'public'"></span>
+          <span>{{ profile().visibility === 'public' ? 'Profil public accessible par toute personne avec le lien' : 'Profil actuellement en mode privé' }}</span>
+        </div>
+      </div>
+      <div class="public-link-actions">
+        <button type="button" class="button button--secondary button--small" (click)="copyPublicLink()">
+          {{ linkCopied() ? '✓ Copié' : 'Copier l\'adresse' }}
+        </button>
+        <button type="button" class="button button--secondary button--small" (click)="toggleQrModal(true)">
+          📱 QR Code
+        </button>
+        <a [routerLink]="['/@' + profile().username]" class="button button--primary button--small">
+          Ouvrir ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="dash-grid">
+      <!-- Left Column: Metrics & Completion -->
+      <div class="dash-col">
+        <!-- Completion Card -->
+        <div class="card completion-box">
+          <div class="completion-details">
+            <div class="card-tag">PROGRESSION DU PROFIL</div>
+            <h3>Votre profil est complété à {{ completionRate() }}%</h3>
+            <p>
+              @if (completionRate() >= 80) {
+                Excellent travail ! Votre profil et votre CV sont complets et percutants pour les recruteurs.
+              } @else {
+                Ajoutez un projet ou complétez vos expériences pour rendre votre page encore plus convaincante.
+              }
+            </p>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width.%]="completionRate()"></div>
+            </div>
+          </div>
+          <div class="progress-badge">
+            <span>{{ completionRate() }}%</span>
+          </div>
+        </div>
+
+        <!-- Quick Checklist -->
+        <div class="card checklist-box">
+          <h3>Checklist de visibilité</h3>
+          <ul class="task-list">
+            <li [class.done]="profile().fullName && profile().title">
+              <span class="task-icon">{{ profile().fullName && profile().title ? '✓' : '○' }}</span>
+              <div>
+                <strong>Titre & coordonnées</strong>
+                <small>{{ profile().title || 'À renseigner' }}</small>
+              </div>
+              <a routerLink="/dashboard/profile">Modifier</a>
+            </li>
+            <li [class.done]="cv().experiences.length > 0">
+              <span class="task-icon">{{ cv().experiences.length > 0 ? '✓' : '○' }}</span>
+              <div>
+                <strong>Expériences dans le CV</strong>
+                <small>{{ cv().experiences.length }} expérience(s) enregistrée(s)</small>
+              </div>
+              <a routerLink="/dashboard/cv">Modifier</a>
+            </li>
+            <li [class.done]="projects().length > 0">
+              <span class="task-icon">{{ projects().length > 0 ? '✓' : '○' }}</span>
+              <div>
+                <strong>Projets dans le Portfolio</strong>
+                <small>{{ projects().length }} réalisation(s) ajoutée(s)</small>
+              </div>
+              <a routerLink="/dashboard/portfolio">Modifier</a>
+            </li>
+            <li [class.done]="profile().visibility === 'public'">
+              <span class="task-icon">{{ profile().visibility === 'public' ? '✓' : '○' }}</span>
+              <div>
+                <strong>Statut de publication</strong>
+                <small>{{ profile().visibility === 'public' ? 'En ligne et visible' : 'Privé' }}</small>
+              </div>
+              <a routerLink="/dashboard/profile">Changer</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Quick Action Hubs -->
+      <div class="dash-col">
+        <!-- CV Hub Card -->
+        <div class="card hub-card hub-card--cv">
+          <div class="hub-header">
+            <div class="hub-icon hub-icon--blue">▤</div>
+            <div class="hub-title">
+              <span class="status-pill status-pill--success">Prêt à exporter</span>
+              <h3>Créateur de CV</h3>
+              <p>{{ cv().experiences.length }} expériences · {{ cv().skills.length }} compétences</p>
+            </div>
+          </div>
+          <p class="hub-desc">
+            Modèle sélectionné : <strong>{{ cv().template === 'modern' ? 'Moderne' : cv().template === 'classic' ? 'Classique' : 'Minimal' }}</strong>.
+            Aperçu dynamique en temps réel et export téléchargeable en format PDF.
+          </p>
+          <div class="hub-actions">
+            <a routerLink="/dashboard/cv" class="button button--primary button--small">
+              Éditer le CV <span>↗</span>
+            </a>
+            <a routerLink="/dashboard/cv" [queryParams]="{ export: true }" class="button button--secondary button--small">
+              Télécharger PDF
+            </a>
+          </div>
+        </div>
+
+        <!-- Portfolio Hub Card -->
+        <div class="card hub-card hub-card--portfolio">
+          <div class="hub-header">
+            <div class="hub-icon hub-icon--violet">▧</div>
+            <div class="hub-title">
+              <span class="status-pill">{{ projects().length }} projets</span>
+              <h3>Gestionnaire de Portfolio</h3>
+              <p>Mettez en avant vos meilleures réalisations</p>
+            </div>
+          </div>
+          <p class="hub-desc">
+            Présentez vos réalisations avec captures, rôle, année et liens de démo en direct.
+          </p>
+          <div class="hub-actions">
+            <a routerLink="/dashboard/portfolio" class="button button--primary button--small">
+              Gérer les projets <span>↗</span>
+            </a>
+            <a routerLink="/dashboard/portfolio" [queryParams]="{ new: true }" class="button button--secondary button--small">
+              + Ajouter un projet
+            </a>
+          </div>
+        </div>
+
+        <!-- Profile Settings Hub Card -->
+        <div class="card hub-card hub-card--profile">
+          <div class="hub-header">
+            <div class="hub-avatar" [style.background-color]="profile().avatarColor">
+              {{ profile().fullName.substring(0, 2).toUpperCase() }}
+            </div>
+            <div class="hub-title">
+              <span class="status-pill status-pill--muted">{{ profile().location }}</span>
+              <h3>{{ profile().fullName }}</h3>
+              <p>{{ profile().title }}</p>
+            </div>
+          </div>
+          <div class="hub-actions">
+            <a routerLink="/dashboard/profile" class="button button--secondary button--small">
+              Modifier mon profil
+            </a>
+            <button type="button" class="button button--outline button--small" (click)="resetToDemo()" title="Restaurer l'exemple de démo Jean Mukendi">
+              Restaurer Démo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal Dialog -->
+  @if (showQrModal()) {
+    <div class="modal-backdrop" (click)="toggleQrModal(false)">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Code QR de votre portfolio</h3>
+          <button type="button" class="btn-close" (click)="toggleQrModal(false)">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>Scannez ce QR Code avec un smartphone pour ouvrir directement votre page publique :</p>
+          <div class="qr-container">
+            <!-- Stylized Crisp Vector QR Representation -->
+            <svg viewBox="0 0 160 160" width="180" height="180" fill="none" class="qr-svg">
+              <rect width="160" height="160" fill="#ffffff" rx="8"/>
+              <!-- Top Left Marker -->
+              <rect x="15" y="15" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="23" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="29" y="29" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <!-- Top Right Marker -->
+              <rect x="105" y="15" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="113" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="119" y="29" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <!-- Bottom Left Marker -->
+              <rect x="15" y="105" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="23" y="113" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="29" y="119" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <!-- Decorative Pattern Modules -->
+              <rect x="65" y="20" width="10" height="10" rx="2" fill="#17233d"/>
+              <rect x="80" y="20" width="15" height="10" rx="2" fill="#2f6fe4"/>
+              <rect x="65" y="35" width="20" height="10" rx="2" fill="#17233d"/>
+              <rect x="20" y="65" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="36" y="65" width="14" height="8" rx="2" fill="#17233d"/>
+              <rect x="55" y="60" width="12" height="12" rx="2" fill="#17233d"/>
+              <rect x="72" y="60" width="16" height="16" rx="3" fill="#2f6fe4"/>
+              <rect x="94" y="65" width="14" height="10" rx="2" fill="#17233d"/>
+              <rect x="115" y="65" width="15" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="135" y="60" width="10" height="18" rx="2" fill="#17233d"/>
+              <rect x="60" y="85" width="16" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="82" y="82" width="14" height="14" rx="2" fill="#17233d"/>
+              <rect x="102" y="85" width="20" height="10" rx="2" fill="#17233d"/>
+              <rect x="65" y="105" width="12" height="20" rx="2" fill="#17233d"/>
+              <rect x="82" y="105" width="18" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="105" y="105" width="12" height="12" rx="2" fill="#17233d"/>
+              <rect x="122" y="105" width="20" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="65" y="130" width="25" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="95" y="125" width="15" height="18" rx="2" fill="#17233d"/>
+              <rect x="115" y="125" width="25" height="16" rx="2" fill="#17233d"/>
+            </svg>
+          </div>
+          <div class="qr-link">{{ publicUrl }}</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="button button--secondary" (click)="copyPublicLink()">
+            {{ linkCopied() ? '✓ Copié !' : 'Copier le lien' }}
+          </button>
+          <button type="button" class="button button--primary" (click)="toggleQrModal(false)">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

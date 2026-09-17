@@ -1,0 +1,247 @@
+<div class="portfolio-page">
+  <div class="container">
+    <div class="portfolio-top-nav">
+      <a routerLink="/dashboard" class="back-link">← Retour au tableau de bord</a>
+      <a [routerLink]="['/@' + profile().username]" target="_blank" class="button button--secondary button--small">
+        <span>Voir sur la page publique ↗</span>
+      </a>
+    </div>
+
+    <div class="portfolio-header">
+      <div>
+        <div class="eyebrow"><span class="eyebrow__line"></span> Vitrine de réalisations</div>
+        <h1>Gestionnaire de Portfolio</h1>
+        <p>Présentez vos réalisations, les compétences mises en œuvre et les liens de démo en direct.</p>
+      </div>
+      <button type="button" class="button button--primary button--medium" (click)="openCreateModal()">
+        <span>+ Ajouter un projet</span>
+      </button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid">
+      @for (project of projects(); track project.id) {
+        <div class="project-card" [style.border-top-color]="project.accentColor || '#2f6fe4'">
+          <div class="project-card__top">
+            <span class="project-year">{{ project.year }}</span>
+            <div class="card-status-badges">
+              @if (project.featured) {
+                <span class="badge badge--star">★ En vedette</span>
+              }
+              <button
+                type="button"
+                class="badge"
+                [class.badge--published]="project.published"
+                [class.badge--draft]="!project.published"
+                (click)="togglePublish(project)"
+                title="Cliquer pour basculer le statut"
+              >
+                {{ project.published ? '● En ligne' : '○ Brouillon' }}
+              </button>
+            </div>
+          </div>
+
+          <h3 class="project-title">{{ project.title }}</h3>
+          <p class="project-role">{{ project.role }}</p>
+          <p class="project-desc">{{ project.description }}</p>
+
+          <!-- Tech tags -->
+          <div class="project-tags">
+            @for (t of project.tags; track t) {
+              <span class="tag">{{ t }}</span>
+            }
+          </div>
+
+          <!-- Project Actions / Links -->
+          <div class="project-card__footer">
+            <div class="project-links">
+              @if (project.demoUrl) {
+                <a [href]="project.demoUrl" target="_blank" rel="noopener" class="link-action">
+                  Démo ↗
+                </a>
+              }
+              @if (project.githubUrl) {
+                <a [href]="project.githubUrl" target="_blank" rel="noopener" class="link-action">
+                  GitHub ↗
+                </a>
+              }
+            </div>
+
+            <div class="project-mgmt-buttons">
+              <button type="button" class="btn-text-action" (click)="openEditModal(project)">
+                Modifier
+              </button>
+              <button type="button" class="btn-text-action btn-text-action--danger" (click)="deleteProject(project.id)">
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @if (projects().length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">▧</div>
+          <h3>Aucun projet dans votre portfolio</h3>
+          <p>Ajoutez votre première réalisation pour la présenter aux recruteurs et clients.</p>
+          <button type="button" class="button button--primary button--small" (click)="openCreateModal()">
+            Ajouter mon premier projet
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Modal / Drawer for Project Creation & Editing -->
+  @if (isModalOpen()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>{{ editingProjectId() ? 'Modifier le projet' : 'Ajouter un nouveau projet' }}</h3>
+          <button type="button" class="btn-close" (click)="closeModal()">✕</button>
+        </div>
+
+        <form (ngSubmit)="saveProject()" class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="projTitle">Titre du projet *</label>
+            <input
+              type="text"
+              id="projTitle"
+              class="form-input"
+              [ngModel]="projectTitle()"
+              (ngModelChange)="projectTitle.set($event)"
+              placeholder="Ex: AfriMarket, Kinshasa Maps..."
+              required
+            />
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="projRole">Votre rôle</label>
+              <input
+                type="text"
+                id="projRole"
+                class="form-input"
+                [ngModel]="projectRole()"
+                (ngModelChange)="projectRole.set($event)"
+                placeholder="Ex: Développeur Full-Stack, UI Designer..."
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="projYear">Année</label>
+              <input
+                type="text"
+                id="projYear"
+                class="form-input"
+                [ngModel]="projectYear()"
+                (ngModelChange)="projectYear.set($event)"
+                placeholder="2025"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="projTagline">Slogan / Phrase d'accroche</label>
+            <input
+              type="text"
+              id="projTagline"
+              class="form-input"
+              [ngModel]="projectTagline()"
+              (ngModelChange)="projectTagline.set($event)"
+              placeholder="Ex: Place de marché pour artisans locaux"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="projDesc">Description détaillée</label>
+            <textarea
+              id="projDesc"
+              class="form-textarea"
+              rows="3"
+              [ngModel]="projectDescription()"
+              (ngModelChange)="projectDescription.set($event)"
+              placeholder="Expliquez le contexte, le problème résolu, et la solution apportée..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="projTags">
+              <span>Technologies & compétences (séparées par une virgule)</span>
+            </label>
+            <input
+              type="text"
+              id="projTags"
+              class="form-input"
+              [ngModel]="projectTagsInput()"
+              (ngModelChange)="projectTagsInput.set($event)"
+              placeholder="Angular, TypeScript, Tailwind, REST API..."
+            />
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="projDemo">Lien de démo / Site web</label>
+              <input
+                type="url"
+                id="projDemo"
+                class="form-input"
+                [ngModel]="projectDemoUrl()"
+                (ngModelChange)="projectDemoUrl.set($event)"
+                placeholder="https://..."
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="projGit">Lien code source / GitHub</label>
+              <input
+                type="url"
+                id="projGit"
+                class="form-input"
+                [ngModel]="projectGithubUrl()"
+                (ngModelChange)="projectGithubUrl.set($event)"
+                placeholder="https://github.com/..."
+              />
+            </div>
+          </div>
+
+          <!-- Accent Color selection -->
+          <div class="form-group">
+            <label class="form-label">Couleur d'accent du projet</label>
+            <div class="color-palette">
+              @for (c of colorOptions; track c) {
+                <button
+                  type="button"
+                  class="color-btn"
+                  [style.background-color]="c"
+                  [class.active]="projectAccentColor() === c"
+                  (click)="projectAccentColor.set(c)"
+                ></button>
+              }
+            </div>
+          </div>
+
+          <!-- Publish & Feature Switches -->
+          <div class="switch-row">
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [ngModel]="projectPublished()"
+                (ngModelChange)="projectPublished.set($event)"
+                name="published"
+              />
+              <span>Publier immédiatement sur la vitrine publique</span>
+            </label>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="button button--secondary" (click)="closeModal()">
+              Annuler
+            </button>
+            <button type="submit" class="button button--primary">
+              {{ editingProjectId() ? 'Enregistrer les modifications' : 'Ajouter le projet' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

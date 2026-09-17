@@ -1,0 +1,270 @@
+<div class="editor-page">
+  <div class="container container--narrow">
+    <div class="editor-top-nav">
+      <a routerLink="/dashboard" class="back-link">← Retour au tableau de bord</a>
+      <div class="editor-status">
+        @if (saveSuccess()) {
+          <span class="save-toast">✓ Modifications enregistrées !</span>
+        }
+      </div>
+    </div>
+
+    <div class="editor-header">
+      <div class="eyebrow"><span class="eyebrow__line"></span> Paramètres du compte</div>
+      <h1>Éditer mon profil professionnel</h1>
+      <p>Ces informations apparaîtront sur votre vitrine publique et sur l'en-tête de votre CV.</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="editor-form">
+      <!-- Section 1 : Identité & Avatar -->
+      <div class="card section-card">
+        <h3>1. Identité et Visuel</h3>
+
+        <div class="avatar-picker-row">
+          <div class="avatar-preview" [style.background-color]="avatarColor()">
+            {{ (fullName() || 'U').substring(0, 2).toUpperCase() }}
+          </div>
+          <div class="avatar-options">
+            <label class="form-label">Couleur d'accent de votre avatar</label>
+            <div class="color-palette">
+              @for (c of colorOptions; track c) {
+                <button
+                  type="button"
+                  class="color-btn"
+                  [style.background-color]="c"
+                  [class.active]="avatarColor() === c"
+                  (click)="selectColor(c)"
+                  [attr.aria-label]="'Choisir la couleur ' + c"
+                ></button>
+              }
+            </div>
+            <span class="form-help">Utilisée pour vos initiales et vos badges sur votre page publique.</span>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="fullName">Nom complet</label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              class="form-input"
+              [ngModel]="fullName()"
+              (ngModelChange)="fullName.set($event)"
+              placeholder="Ex: Jean Mukendi"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="username">Identifiant unique (slug URL)</label>
+            <div class="slug-box">
+              <span>shadowkite.com/@</span>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                class="form-input"
+                [ngModel]="username()"
+                (ngModelChange)="username.set($event)"
+                placeholder="jean-mukendi"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="title">Titre professionnel</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            class="form-input"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            placeholder="Ex: Développeur Web & Mobile Full-Stack"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="bio">Courte biographie professionnelle</label>
+          <textarea
+            id="bio"
+            name="bio"
+            class="form-textarea"
+            rows="3"
+            [ngModel]="bio()"
+            (ngModelChange)="bio.set($event)"
+            placeholder="Présentez en 2 ou 3 phrases qui vous êtes et votre valeur ajoutée..."
+          ></textarea>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="location">Ville & Pays</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              class="form-input"
+              [ngModel]="location()"
+              (ngModelChange)="location.set($event)"
+              placeholder="Ex: Kinshasa, RDC"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="availability">Statut de disponibilité</label>
+            <select
+              id="availability"
+              name="availability"
+              class="form-select"
+              [ngModel]="availability()"
+              (ngModelChange)="availability.set($event)"
+            >
+              <option value="available">🟢 Disponible immédiatement</option>
+              <option value="open">🟡 À l'écoute de nouvelles opportunités</option>
+              <option value="busy">🔴 Actuellement en poste / Non disponible</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 : Contact et Réseaux -->
+      <div class="card section-card">
+        <h3>2. Contact et Réseaux Professionnels</h3>
+        <p class="section-desc">Facilitez la prise de contact directe avec les recruteurs ou clients.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="email">Email de contact</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-input"
+              [ngModel]="email()"
+              (ngModelChange)="email.set($event)"
+              placeholder="contact@exemple.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Téléphone</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              class="form-input"
+              [ngModel]="phone()"
+              (ngModelChange)="phone.set($event)"
+              placeholder="+243 81 234 5678"
+            />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="whatsapp">Numéro WhatsApp (pour contact direct)</label>
+            <input
+              type="text"
+              id="whatsapp"
+              name="whatsapp"
+              class="form-input"
+              [ngModel]="whatsapp()"
+              (ngModelChange)="whatsapp.set($event)"
+              placeholder="+243812345678 (avec indicatif)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="linkedinUrl">Profil LinkedIn</label>
+            <input
+              type="url"
+              id="linkedinUrl"
+              name="linkedinUrl"
+              class="form-input"
+              [ngModel]="linkedinUrl()"
+              (ngModelChange)="linkedinUrl.set($event)"
+              placeholder="https://linkedin.com/in/votre-nom"
+            />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="githubUrl">Profil GitHub / Git</label>
+            <input
+              type="url"
+              id="githubUrl"
+              name="githubUrl"
+              class="form-input"
+              [ngModel]="githubUrl()"
+              (ngModelChange)="githubUrl.set($event)"
+              placeholder="https://github.com/votre-nom"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="twitterUrl">Twitter / X</label>
+            <input
+              type="url"
+              id="twitterUrl"
+              name="twitterUrl"
+              class="form-input"
+              [ngModel]="twitterUrl()"
+              (ngModelChange)="twitterUrl.set($event)"
+              placeholder="https://twitter.com/votre-nom"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 : Confidentialité et Visibilité -->
+      <div class="card section-card">
+        <h3>3. Confidentialité & Visibilité</h3>
+        <div class="visibility-toggle-group">
+          <label class="radio-card" [class.selected]="visibility() === 'public'">
+            <input
+              type="radio"
+              name="visibility"
+              value="public"
+              [ngModel]="visibility()"
+              (ngModelChange)="visibility.set('public')"
+            />
+            <div class="radio-card__content">
+              <strong>🌐 Profil Public</strong>
+              <p>Votre vitrine est accessible par n'importe qui ayant votre lien unique ou le code QR.</p>
+            </div>
+          </label>
+
+          <label class="radio-card" [class.selected]="visibility() === 'private'">
+            <input
+              type="radio"
+              name="visibility"
+              value="private"
+              [ngModel]="visibility()"
+              (ngModelChange)="visibility.set('private')"
+            />
+            <div class="radio-card__content">
+              <strong>🔒 Profil Privé</strong>
+              <p>Seul vous pouvez consulter votre espace. Le lien public affichera une mention privée.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-bottom-actions">
+        <button type="submit" class="button button--primary button--large">
+          Enregistrer le profil
+        </button>
+        <a [routerLink]="['/@' + username()]" target="_blank" class="button button--secondary button--large">
+          Voir le rendu public ↗
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

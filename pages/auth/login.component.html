@@ -1,0 +1,80 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__header">
+      <a routerLink="/" class="auth-brand">
+        <span class="auth-brand__mark">✦</span>
+        <span>Shadow<strong>Kite</strong></span>
+      </a>
+      <h2>Connexion à votre espace</h2>
+      <p>Accédez à votre tableau de bord pour gérer votre CV et votre portfolio.</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="auth-alert auth-alert--error">
+        <span>⚠</span>
+        <div>{{ errorMessage() }}</div>
+      </div>
+    }
+
+    <!-- Quick Demo Access Banner -->
+    <div class="demo-quick-box">
+      <div class="demo-quick-copy">
+        <span class="demo-badge">MODE ESSAI RAPIDE</span>
+        <strong>Tester sans créer de compte</strong>
+        <p>Explorez immédiatement la plateforme avec le profil modèle de Jean Mukendi.</p>
+      </div>
+      <button type="button" class="button button--secondary button--small" (click)="loginDemo()">
+        ⚡ Essai 1-clic
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label class="form-label" for="email">Adresse email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-input"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="votre.nom@exemple.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">
+          <label for="password">Mot de passe</label>
+          <a routerLink="/forgot-password" class="forgot-link">Mot de passe oublié ?</a>
+        </div>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="form-input"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <button type="submit" class="button button--primary button--large btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>Connexion en cours...</span>
+        } @else {
+          <span>Se connecter</span>
+          <span class="button__arrow">→</span>
+        }
+      </button>
+    </form>
+
+    <div class="auth-card__footer">
+      <p>Pas encore de compte ? <a routerLink="/register">Créer mon profil gratuitement</a></p>
+      <div class="auth-back">
+        <a routerLink="/">← Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+</div>

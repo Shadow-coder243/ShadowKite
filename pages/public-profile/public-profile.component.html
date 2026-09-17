@@ -1,0 +1,332 @@
+<div class="public-page">
+  @if (notFound()) {
+    <div class="container not-found-box">
+      <h2>Profil introuvable</h2>
+      <p>Aucun portfolio ne correspond à cet identifiant.</p>
+      <a routerLink="/" class="button button--primary">Retour à l'accueil</a>
+    </div>
+  } @else if (profile(); as p) {
+    <!-- Floating Share & Actions Bar (no-print) -->
+    <aside class="sticky-action-bar no-print">
+      <div class="container bar-inner">
+        <div class="bar-user-mini">
+          <span class="avatar-mini" [style.background-color]="p.avatarColor">
+            {{ p.fullName.substring(0, 2).toUpperCase() }}
+          </span>
+          <span class="user-name-mini">{{ p.fullName }}</span>
+        </div>
+
+        <div class="bar-buttons">
+          <button type="button" class="btn-share" (click)="copyLink()" [class.copied]="linkCopied()">
+            {{ linkCopied() ? '✓ Lien copié !' : '🔗 Copier le lien' }}
+          </button>
+          <button type="button" class="btn-share btn-whatsapp" (click)="shareWhatsApp()" title="Partager sur WhatsApp">
+            💬 WhatsApp
+          </button>
+          <button type="button" class="btn-share btn-linkedin" (click)="shareLinkedIn()" title="Partager sur LinkedIn">
+            in LinkedIn
+          </button>
+          <button type="button" class="btn-share" (click)="toggleQr(true)" title="Afficher le QR Code">
+            📱 QR Code
+          </button>
+          <button type="button" class="button button--primary button--small" (click)="downloadCv()">
+            📥 Télécharger CV (PDF)
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="container public-content">
+      <!-- Profile Header Hero -->
+      <section class="profile-hero">
+        <div class="hero-avatar" [style.background-color]="p.avatarColor">
+          {{ p.fullName.substring(0, 2).toUpperCase() }}
+        </div>
+
+        <div class="hero-body">
+          <div class="hero-status-row">
+            <span class="location-badge">📍 {{ p.location.toUpperCase() }}</span>
+            @if (p.availability === 'available') {
+              <span class="status-pill status-pill--success">● Disponible</span>
+            } @else if (p.availability === 'open') {
+              <span class="status-pill status-pill--warning">● Ouvert aux opportunités</span>
+            } @else {
+              <span class="status-pill status-pill--muted">● En poste</span>
+            }
+          </div>
+
+          <h1 class="user-fullname">{{ p.fullName }}</h1>
+          <p class="user-title">{{ p.title }}</p>
+          <p class="user-bio">{{ p.bio }}</p>
+
+          <!-- Social Contacts -->
+          <div class="social-links-row">
+            @if (p.email) {
+              <a [href]="'mailto:' + p.email" class="social-badge">✉️ {{ p.email }}</a>
+            }
+            @if (p.phone) {
+              <a [href]="'tel:' + p.phone" class="social-badge">📞 {{ p.phone }}</a>
+            }
+            @if (p.whatsapp) {
+              <a [href]="'https://wa.me/' + p.whatsapp.replace('+', '').replace(/\\s/g, '')" target="_blank" rel="noopener" class="social-badge">
+                💬 WhatsApp
+              </a>
+            }
+            @if (p.githubUrl) {
+              <a [href]="p.githubUrl" target="_blank" rel="noopener" class="social-badge">GH GitHub</a>
+            }
+            @if (p.linkedinUrl) {
+              <a [href]="p.linkedinUrl" target="_blank" rel="noopener" class="social-badge">in LinkedIn</a>
+            }
+            @if (p.twitterUrl) {
+              <a [href]="p.twitterUrl" target="_blank" rel="noopener" class="social-badge">𝕏 Twitter</a>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      @if (projects().length > 0) {
+        <section class="section-block">
+          <div class="block-header">
+            <span class="eyebrow"><span class="eyebrow__line"></span> Réalisations & Projets</span>
+            <h2>Projets sélectionnés ({{ projects().length }})</h2>
+          </div>
+
+          <div class="public-projects-grid">
+            @for (project of projects(); track project.id) {
+              <article class="public-project-card" [style.border-top-color]="project.accentColor || '#2f6fe4'">
+                <div class="card-meta">
+                  <span class="proj-year">{{ project.year }}</span>
+                  <span class="proj-role">{{ project.role }}</span>
+                </div>
+                <h3 class="proj-title">{{ project.title }}</h3>
+                @if (project.tagline) {
+                  <p class="proj-tagline">{{ project.tagline }}</p>
+                }
+                <p class="proj-desc">{{ project.description }}</p>
+
+                <div class="proj-tags">
+                  @for (t of project.tags; track t) {
+                    <span class="tag">{{ t }}</span>
+                  }
+                </div>
+
+                <div class="proj-actions">
+                  @if (project.demoUrl) {
+                    <a [href]="project.demoUrl" target="_blank" rel="noopener" class="button button--primary button--small">
+                      Voir la démo ↗
+                    </a>
+                  }
+                  @if (project.githubUrl) {
+                    <a [href]="project.githubUrl" target="_blank" rel="noopener" class="button button--secondary button--small">
+                      Code source ↗
+                    </a>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        </section>
+      }
+
+      <!-- CV Section / Printable Document Sheet -->
+      @if (cv(); as c) {
+        <section class="section-block">
+          <div class="block-header no-print">
+            <span class="eyebrow"><span class="eyebrow__line"></span> Curriculum Vitae</span>
+            <div class="cv-section-title-row">
+              <h2>Parcours Professionnel</h2>
+              <button type="button" class="button button--secondary button--small" (click)="downloadCv()">
+                📥 Exporter / Imprimer en PDF
+              </button>
+            </div>
+          </div>
+
+          <div class="cv-sheet printable-cv" [attr.data-template]="c.template">
+            <!-- CV Header in Sheet -->
+            <div class="cv-doc-header">
+              <div class="cv-doc-header__left">
+                <h2 class="cv-name">{{ p.fullName }}</h2>
+                <p class="cv-headline">{{ p.title }}</p>
+              </div>
+              <div class="cv-doc-header__right">
+                <div class="cv-contact-item">📍 {{ p.location }}</div>
+                @if (p.email) {
+                  <div class="cv-contact-item">✉️ {{ p.email }}</div>
+                }
+                @if (p.phone) {
+                  <div class="cv-contact-item">📞 {{ p.phone }}</div>
+                }
+                <div class="cv-contact-item cv-contact-link">🔗 {{ currentUrl }}</div>
+              </div>
+            </div>
+
+            <div class="cv-doc-body">
+              @if (c.summary) {
+                <section class="cv-section">
+                  <h3 class="cv-section-title">Profil & Objectif</h3>
+                  <p class="cv-summary-text">{{ c.summary }}</p>
+                </section>
+              }
+
+              @if (c.experiences.length > 0) {
+                <section class="cv-section">
+                  <h3 class="cv-section-title">Expériences Professionnelles</h3>
+                  <div class="cv-timeline">
+                    @for (exp of c.experiences; track exp.id) {
+                      <div class="cv-entry">
+                        <div class="cv-entry-head">
+                          <div>
+                            <strong class="cv-entry-title">{{ exp.role }}</strong>
+                            <span class="cv-entry-sub">{{ exp.company }} · {{ exp.location }}</span>
+                          </div>
+                          <span class="cv-entry-date">{{ exp.startDate }} - {{ exp.endDate || 'Présent' }}</span>
+                        </div>
+                        @if (exp.description) {
+                          <p class="cv-entry-desc">{{ exp.description }}</p>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              @if (c.educations.length > 0) {
+                <section class="cv-section">
+                  <h3 class="cv-section-title">Formations & Diplômes</h3>
+                  <div class="cv-timeline">
+                    @for (edu of c.educations; track edu.id) {
+                      <div class="cv-entry">
+                        <div class="cv-entry-head">
+                          <div>
+                            <strong class="cv-entry-title">{{ edu.degree }}</strong>
+                            <span class="cv-entry-sub">{{ edu.institution }} {{ edu.field ? '— ' + edu.field : '' }}</span>
+                          </div>
+                          <span class="cv-entry-date">{{ edu.startYear }} - {{ edu.endYear }}</span>
+                        </div>
+                        @if (edu.description) {
+                          <p class="cv-entry-desc">{{ edu.description }}</p>
+                        }
+                      </div>
+                    }
+                  </div>
+                </section>
+              }
+
+              <div class="cv-columns-row">
+                @if (c.skills.length > 0) {
+                  <div class="cv-subcol">
+                    <h3 class="cv-section-title">Compétences</h3>
+                    <div class="cv-skills-grid">
+                      @for (sk of c.skills; track sk.id) {
+                        <span class="cv-skill-badge">
+                          <strong>{{ sk.name }}</strong>
+                          <small>{{ sk.level }}</small>
+                        </span>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if (c.languages.length > 0 || c.certifications.length > 0) {
+                  <div class="cv-subcol">
+                    @if (c.languages.length > 0) {
+                      <h3 class="cv-section-title">Langues</h3>
+                      <div class="cv-lang-list">
+                        @for (l of c.languages; track l.id) {
+                          <div class="cv-lang-item">
+                            <span>{{ l.name }}</span>
+                            <strong>{{ l.level }}</strong>
+                          </div>
+                        }
+                      </div>
+                    }
+
+                    @if (c.certifications.length > 0) {
+                      <h3 class="cv-section-title" style="margin-top: 14px;">Certifications</h3>
+                      <div class="cv-cert-list">
+                        @for (cert of c.certifications; track cert.id) {
+                          <div class="cv-cert-item">
+                            <span>{{ cert.title }}</span>
+                            <small>{{ cert.issuer }} ({{ cert.year }})</small>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="cv-doc-footer">
+              <span>Généré avec ShadowKite · Plateforme ouverte de CV & Portfolio</span>
+              <span>{{ currentUrl }}</span>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- ShadowKite Public CTA Banner (no-print) -->
+      <section class="creator-cta no-print">
+        <div class="creator-cta__inner">
+          <div>
+            <h3>Vous aimez ce profil ?</h3>
+            <p>Créez gratuitement votre propre CV et portfolio avec un lien unique en quelques minutes.</p>
+          </div>
+          <a routerLink="/register" class="button button--primary button--large">
+            Créer mon profil ShadowKite <span>↗</span>
+          </a>
+        </div>
+      </section>
+    </main>
+  }
+
+  <!-- QR Modal (no-print) -->
+  @if (showQrModal()) {
+    <div class="modal-backdrop" (click)="toggleQr(false)">
+      <div class="modal-dialog" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Code QR du profil de {{ profile()?.fullName }}</h3>
+          <button type="button" class="btn-close" (click)="toggleQr(false)">✕</button>
+        </div>
+        <div class="modal-body">
+          <p>Scannez pour afficher ce portfolio directement sur votre smartphone :</p>
+          <div class="qr-box">
+            <svg viewBox="0 0 160 160" width="180" height="180" fill="none">
+              <rect width="160" height="160" fill="#ffffff" rx="8"/>
+              <rect x="15" y="15" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="23" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="29" y="29" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="105" y="15" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="113" y="23" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="119" y="29" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="15" y="105" width="40" height="40" rx="6" fill="#17233d"/>
+              <rect x="23" y="113" width="24" height="24" rx="3" fill="#ffffff"/>
+              <rect x="29" y="119" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="65" y="20" width="10" height="10" rx="2" fill="#17233d"/>
+              <rect x="80" y="20" width="15" height="10" rx="2" fill="#2f6fe4"/>
+              <rect x="65" y="35" width="20" height="10" rx="2" fill="#17233d"/>
+              <rect x="20" y="65" width="12" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="72" y="60" width="16" height="16" rx="3" fill="#2f6fe4"/>
+              <rect x="115" y="65" width="15" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="60" y="85" width="16" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="82" y="105" width="18" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="122" y="105" width="20" height="12" rx="2" fill="#2f6fe4"/>
+              <rect x="65" y="130" width="25" height="12" rx="2" fill="#2f6fe4"/>
+            </svg>
+          </div>
+          <div class="qr-url">{{ currentUrl }}</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="button button--secondary" (click)="copyLink()">
+            {{ linkCopied() ? '✓ Copié !' : 'Copier le lien' }}
+          </button>
+          <button type="button" class="button button--primary" (click)="toggleQr(false)">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>
