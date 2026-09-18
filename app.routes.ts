@@ -1,24 +1,50 @@
-import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { LoginComponent } from './pages/auth/login.component';
-import { RegisterComponent } from './pages/auth/register.component';
-import { ForgotPasswordComponent } from './pages/auth/forgot-password.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { ProfileEditorComponent } from './pages/profile-editor/profile-editor.component';
-import { CvBuilderComponent } from './pages/cv-builder/cv-builder.component';
-import { PortfolioManagerComponent } from './pages/portfolio-manager/portfolio-manager.component';
-import { PublicProfileComponent } from './pages/public-profile/public-profile.component';
+import { Routes } from "@angular/router";
+import { HomePage } from "./home.page";
+import {
+  AuthPage,
+  CvEditorPage,
+  DashboardPage,
+  PortfolioEditorPage,
+  ProfilePage,
+  PublicProfilePage,
+  WorkspaceLayout,
+} from "./pages";
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, title: 'ShadowKite — CV & Portfolio pour tous' },
-  { path: 'login', component: LoginComponent, title: 'Connexion — ShadowKite' },
-  { path: 'register', component: RegisterComponent, title: 'Créer mon profil — ShadowKite' },
-  { path: 'forgot-password', component: ForgotPasswordComponent, title: 'Récupération de compte — ShadowKite' },
-  { path: 'dashboard', component: DashboardComponent, title: 'Tableau de bord — ShadowKite' },
-  { path: 'dashboard/profile', component: ProfileEditorComponent, title: 'Édition du profil — ShadowKite' },
-  { path: 'dashboard/cv', component: CvBuilderComponent, title: 'Créateur de CV — ShadowKite' },
-  { path: 'dashboard/portfolio', component: PortfolioManagerComponent, title: 'Gestionnaire de Portfolio — ShadowKite' },
-  { path: 'p/:slug', component: PublicProfileComponent, title: 'Profil & Portfolio — ShadowKite' },
-  { path: '@:username', component: PublicProfileComponent, title: 'Profil & Portfolio — ShadowKite' },
-  { path: '**', redirectTo: '' },
+  { path: "", component: HomePage, title: "ShadowKite — CV & Portfolio" },
+  { path: "login", component: AuthPage, title: "Se connecter — ShadowKite" },
+  {
+    path: "register",
+    component: AuthPage,
+    title: "Créer un profil — ShadowKite",
+  },
+  {
+    path: "app",
+    component: WorkspaceLayout,
+    children: [
+      { path: "", pathMatch: "full", redirectTo: "dashboard" },
+      {
+        path: "dashboard",
+        component: DashboardPage,
+        title: "Tableau de bord — ShadowKite",
+      },
+      {
+        path: "profile",
+        component: ProfilePage,
+        title: "Mon profil — ShadowKite",
+      },
+      { path: "cv", component: CvEditorPage, title: "Mon CV — ShadowKite" },
+      {
+        path: "portfolio",
+        component: PortfolioEditorPage,
+        title: "Mon portfolio — ShadowKite",
+      },
+    ],
+  },
+  {
+    path: "u/:username",
+    component: PublicProfilePage,
+    title: "Profil public — ShadowKite",
+  },
+  { path: "**", redirectTo: "" },
 ];
