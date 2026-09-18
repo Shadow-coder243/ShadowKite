@@ -30,9 +30,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "styles.scss"
-            ]
+            "styles": ["styles.scss", "pages.scss"]
           },
           "configurations": {
             "production": {
