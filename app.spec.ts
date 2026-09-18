@@ -1,27 +1,21 @@
-import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { App } from './app';
-import { routes } from './app.routes';
+import { TestBed } from "@angular/core/testing";
+import { App } from "./app";
 
-describe('App', () => {
+describe("App", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes), provideHttpClient()],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  it("should create the shell", () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render brand', async () => {
+  it("should render the router outlet", async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.brand__name')?.textContent).toContain('ShadowKite');
+    expect(fixture.nativeElement.querySelector("router-outlet")).toBeTruthy();
   });
 });
